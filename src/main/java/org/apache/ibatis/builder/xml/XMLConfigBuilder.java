@@ -48,6 +48,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
 /**
+ * 解析XML定义的configuration对象
  * @author Clinton Begin
  * @author Kazuki Shimizu
  */

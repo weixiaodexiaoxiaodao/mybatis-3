@@ -19,7 +19,7 @@ import java.sql.Connection;
 
 /**
  * Creates an {@link SqlSession} out of a connection or a DataSource
- * 
+ * 管理数据库会话，聚合configuration对象，是构建阶段的重要输出结果
  * @author Clinton Begin
  */
 public interface SqlSessionFactory {

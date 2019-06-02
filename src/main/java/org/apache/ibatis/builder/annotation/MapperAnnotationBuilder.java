@@ -90,6 +90,7 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.UnknownTypeHandler;
 
 /**
+ * 解析注释定义的SQLMapper对象集合
  * @author Clinton Begin
  */
 public class MapperAnnotationBuilder {

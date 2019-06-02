@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
+ * configuration对象中的SQL映射配置对象的注册机
  * @author Clinton Begin
  * @author Eduardo Macarron
  * @author Lasse Voss

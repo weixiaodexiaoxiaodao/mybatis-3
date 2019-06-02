@@ -48,6 +48,7 @@ import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
 /**
+ * 解析XML定义的sql映射配置对象集合
  * @author Clinton Begin
  */
 public class XMLMapperBuilder extends BaseBuilder {
