@@ -93,10 +93,12 @@ public class XMLConfigBuilder extends BaseBuilder {
   }
 
   public Configuration parse() {
+    // 设置不重复解析
     if (parsed) {
       throw new BuilderException("Each XMLConfigBuilder can only be used once.");
     }
     parsed = true;
+    // 从configuration处开始解析
     parseConfiguration(parser.evalNode("/configuration"));
     return configuration;
   }
@@ -105,18 +107,26 @@ public class XMLConfigBuilder extends BaseBuilder {
     try {
       //issue #117 read properties first
       propertiesElement(root.evalNode("properties"));
+      // 加载vfs自定义实现
       Properties settings = settingsAsProperties(root.evalNode("settings"));
       loadCustomVfs(settings);
+      //加载别名处理器
       typeAliasesElement(root.evalNode("typeAliases"));
+      // 加载自定义扩展点
       pluginElement(root.evalNode("plugins"));
+      // 加载结果集对象工厂
       objectFactoryElement(root.evalNode("objectFactory"));
       objectWrapperFactoryElement(root.evalNode("objectWrapperFactory"));
       reflectorFactoryElement(root.evalNode("reflectorFactory"));
       settingsElement(settings);
       // read it after objectFactory and objectWrapperFactory issue #631
+      // 加载环境标志
       environmentsElement(root.evalNode("environments"));
+      // 加载数据库厂商标志
       databaseIdProviderElement(root.evalNode("databaseIdProvider"));
+      // 加载类型处理器
       typeHandlerElement(root.evalNode("typeHandlers"));
+      // 加载sql mapper
       mapperElement(root.evalNode("mappers"));
     } catch (Exception e) {
       throw new BuilderException("Error parsing SQL Mapper Configuration. Cause: " + e, e);
@@ -129,7 +139,9 @@ public class XMLConfigBuilder extends BaseBuilder {
     }
     Properties props = context.getChildrenAsProperties();
     // Check that all settings are known to the configuration class
+    // 判断configuration类是否被加载
     MetaClass metaConfig = MetaClass.forClass(Configuration.class, localReflectorFactory);
+    // 遍历props,判断在configuration类中是否存在与配置项对应的set方法
     for (Object key : props.keySet()) {
       if (!metaConfig.hasSetter(String.valueOf(key))) {
         throw new BuilderException("The setting " + key + " is not known.  Make sure you spelled it correctly (case sensitive).");
@@ -216,7 +228,9 @@ public class XMLConfigBuilder extends BaseBuilder {
 
   private void propertiesElement(XNode context) throws Exception {
     if (context != null) {
+      // 从xml中读取的name , value
       Properties defaults = context.getChildrenAsProperties();
+      // 解析从url或者 resource 中的key-value
       String resource = context.getStringAttribute("resource");
       String url = context.getStringAttribute("url");
       if (resource != null && url != null) {
@@ -227,6 +241,7 @@ public class XMLConfigBuilder extends BaseBuilder {
       } else if (url != null) {
         defaults.putAll(Resources.getUrlAsProperties(url));
       }
+      // configuration中已有的key-value
       Properties vars = configuration.getVariables();
       if (vars != null) {
         defaults.putAll(vars);

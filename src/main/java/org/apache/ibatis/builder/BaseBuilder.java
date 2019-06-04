@@ -35,6 +35,10 @@ import org.apache.ibatis.type.TypeHandlerRegistry;
  */
 public abstract class BaseBuilder {
   protected final Configuration configuration;
+  /**
+   *   注，这里的typeAliasRegistry和 Configuration里面的typeAliasRegistry是同一个对象的不同引用
+   *
+   */
   protected final TypeAliasRegistry typeAliasRegistry;
   protected final TypeHandlerRegistry typeHandlerRegistry;
 
