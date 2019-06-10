@@ -59,7 +59,9 @@ public class MapperRegistry {
   }
 
   public <T> void addMapper(Class<T> type) {
+    // 只处理接口
     if (type.isInterface()) {
+      // 判断重复加载
       if (hasMapper(type)) {
         throw new BindingException("Type " + type + " is already known to the MapperRegistry.");
       }
@@ -93,7 +95,9 @@ public class MapperRegistry {
   public void addMappers(String packageName, Class<?> superType) {
     ResolverUtil<Class<?>> resolverUtil = new ResolverUtil<Class<?>>();
     resolverUtil.find(new ResolverUtil.IsA(superType), packageName);
+    // 扫描包
     Set<Class<? extends Class<?>>> mapperSet = resolverUtil.getClasses();
+    // 遍历packageName对应的包，将包内的类处理成MappedStatement
     for (Class<?> mapperClass : mapperSet) {
       addMapper(mapperClass);
     }

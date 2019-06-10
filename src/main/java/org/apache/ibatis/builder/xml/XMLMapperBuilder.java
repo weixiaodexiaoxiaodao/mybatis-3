@@ -89,12 +89,14 @@ public class XMLMapperBuilder extends BaseBuilder {
   }
 
   public void parse() {
+    //判断resource是否被重复解析
     if (!configuration.isResourceLoaded(resource)) {
+      // 从mapper节点开始解析
       configurationElement(parser.evalNode("/mapper"));
       configuration.addLoadedResource(resource);
       bindMapperForNamespace();
     }
-
+    // 在解析时加载失败的情况下重试加载
     parsePendingResultMaps();
     parsePendingCacheRefs();
     parsePendingStatements();
@@ -106,13 +108,17 @@ public class XMLMapperBuilder extends BaseBuilder {
 
   private void configurationElement(XNode context) {
     try {
+      // 加载命名空间，一般使用mapper或dao的接口名
       String namespace = context.getStringAttribute("namespace");
       if (namespace == null || namespace.equals("")) {
         throw new BuilderException("Mapper's namespace cannot be empty");
       }
       builderAssistant.setCurrentNamespace(namespace);
+      // 加载缓存引用
       cacheRefElement(context.evalNode("cache-ref"));
+      // 加载缓存配置
       cacheElement(context.evalNode("cache"));
+      // 加载参数映射
       parameterMapElement(context.evalNodes("/mapper/parameterMap"));
       resultMapElements(context.evalNodes("/mapper/resultMap"));
       sqlElement(context.evalNodes("/mapper/sql"));
