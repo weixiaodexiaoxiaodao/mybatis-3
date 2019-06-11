@@ -32,6 +32,7 @@ import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.managed.ManagedTransactionFactory;
 
 /**
+ * 只用于构造sqlSession的默认子类DefaultSqlSession对象
  * @author Clinton Begin
  */
 public class DefaultSqlSessionFactory implements SqlSessionFactory {
@@ -93,10 +94,15 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
   private SqlSession openSessionFromDataSource(ExecutorType execType, TransactionIsolationLevel level, boolean autoCommit) {
     Transaction tx = null;
     try {
+      // 取出构建好的环境
       final Environment environment = configuration.getEnvironment();
+      // 事务工厂构建事务
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
+      // 需要从environment中获取数据源
       tx = transactionFactory.newTransaction(environment.getDataSource(), level, autoCommit);
+      // 生成执行器
       final Executor executor = configuration.newExecutor(tx, execType);
+      // 构建sqlSession
       return new DefaultSqlSession(configuration, executor, autoCommit);
     } catch (Exception e) {
       closeTransaction(tx); // may have fetched a connection so lets call close()
@@ -110,14 +116,17 @@ public class DefaultSqlSessionFactory implements SqlSessionFactory {
     try {
       boolean autoCommit;
       try {
+        // 从数据库连接元数据中获取自动提交的参数
         autoCommit = connection.getAutoCommit();
       } catch (SQLException e) {
         // Failover to true, as most poor drivers
         // or databases won't support transactions
+        // 大部分的jdbc驱动都不支持事务，所以默认值为true
         autoCommit = true;
       }      
       final Environment environment = configuration.getEnvironment();
       final TransactionFactory transactionFactory = getTransactionFactoryFromEnvironment(environment);
+      // 直接使用传入的连接
       final Transaction tx = transactionFactory.newTransaction(connection);
       final Executor executor = configuration.newExecutor(tx, execType);
       return new DefaultSqlSession(configuration, executor, autoCommit);

@@ -23,6 +23,7 @@ import java.sql.Statement;
 import java.util.List;
 
 /**
+ * 处理结果集的管理器接口
  * @author Clinton Begin
  */
 public interface ResultSetHandler {

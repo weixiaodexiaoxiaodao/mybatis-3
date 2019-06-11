@@ -28,6 +28,7 @@ import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.transaction.Transaction;
 
 /**
+ * 执行器，方法更加抽象，只有select,update
  * @author Clinton Begin
  */
 public interface Executor {

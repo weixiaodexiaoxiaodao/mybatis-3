@@ -30,6 +30,7 @@ import org.apache.ibatis.session.Configuration;
  * the value from). 
  * </br>
  * Can also have additional parameters that are created by the dynamic language (for loops, bind...).
+ * SQL的抽象，存放执行SQL的内容
  *
  * @author Clinton Begin
  */

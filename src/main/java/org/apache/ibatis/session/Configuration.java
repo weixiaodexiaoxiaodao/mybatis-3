@@ -92,7 +92,7 @@ import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 
 /**
- * 存储所有mybatis运行时的配置
+ * 保存构建阶段的结果，存储所有mybatis运行时的配置，也负责执行阶段初始化需要的变量
  * @author Clinton Begin
  */
 public class Configuration {
@@ -579,15 +579,20 @@ public class Configuration {
     executorType = executorType == null ? ExecutorType.SIMPLE : executorType;
     Executor executor;
     if (ExecutorType.BATCH == executorType) {
+      //支持批量的查询器
       executor = new BatchExecutor(this, transaction);
     } else if (ExecutorType.REUSE == executorType) {
+      //支持statement缓存的执行器
       executor = new ReuseExecutor(this, transaction);
     } else {
+      //基础执行器
       executor = new SimpleExecutor(this, transaction);
     }
     if (cacheEnabled) {
+      //装饰支持缓存的执行器
       executor = new CachingExecutor(executor);
     }
+    // 装载扩展插件
     executor = (Executor) interceptorChain.pluginAll(executor);
     return executor;
   }
