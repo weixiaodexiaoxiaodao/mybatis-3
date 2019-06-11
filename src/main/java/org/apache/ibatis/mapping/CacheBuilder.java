@@ -99,6 +99,7 @@ public class CacheBuilder {
         cache = newCacheDecoratorInstance(decorator, cache);
         setCacheProperties(cache);
       }
+      // 标准的装饰方法
       cache = setStandardDecorators(cache);
     } else if (!LoggingCache.class.isAssignableFrom(cache.getClass())) {
       cache = new LoggingCache(cache);
@@ -117,20 +118,27 @@ public class CacheBuilder {
 
   private Cache setStandardDecorators(Cache cache) {
     try {
+      // 获取cache的元数据
       MetaObject metaCache = SystemMetaObject.forObject(cache);
       if (size != null && metaCache.hasSetter("size")) {
+        // 设置大小
         metaCache.setValue("size", size);
       }
       if (clearInterval != null) {
+        // 装饰带时间间隔的缓存
         cache = new ScheduledCache(cache);
         ((ScheduledCache) cache).setClearInterval(clearInterval);
       }
       if (readWrite) {
+        // 装饿序列化的缓存
         cache = new SerializedCache(cache);
       }
+      // 装饰写日志的缓存
       cache = new LoggingCache(cache);
+      // 装饰同步缓存
       cache = new SynchronizedCache(cache);
       if (blocking) {
+        // 装饰阻塞缓存
         cache = new BlockingCache(cache);
       }
       return cache;

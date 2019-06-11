@@ -111,6 +111,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
       unresolvedCacheRef = true;
       Cache cache = configuration.getCache(namespace);
       if (cache == null) {
+        //若加载未完成，则不能使用
         throw new IncompleteElementException("No cache for namespace '" + namespace + "' could be found.");
       }
       currentCache = cache;
@@ -130,6 +131,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
       Properties props) {
     Cache cache = new CacheBuilder(currentNamespace)
         .implementation(valueOrDefault(typeClass, PerpetualCache.class))
+            //使用了装饰模式，向装饰者列表CacheBuilder.decorators新加了一个元素
         .addDecorator(valueOrDefault(evictionClass, LruCache.class))
         .clearInterval(flushInterval)
         .size(size)
@@ -298,6 +300,7 @@ public class MapperBuilderAssistant extends BaseBuilder {
       statementBuilder.parameterMap(statementParameterMap);
     }
 
+    // 每一个update,select,等等都对应着一个statement
     MappedStatement statement = statementBuilder.build();
     configuration.addMappedStatement(statement);
     return statement;
