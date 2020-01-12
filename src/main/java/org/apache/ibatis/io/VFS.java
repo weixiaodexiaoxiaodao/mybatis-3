@@ -47,6 +47,7 @@ public abstract class VFS {
 
     @SuppressWarnings("unchecked")
     static VFS createVFS() {
+      //#region 创建VFS
       // Try the user implementations first, then the built-ins
       List<Class<? extends VFS>> impls = new ArrayList<>();
       impls.addAll(USER_IMPLEMENTATIONS);
@@ -73,7 +74,7 @@ public abstract class VFS {
       if (log.isDebugEnabled()) {
         log.debug("Using VFS adapter " + vfs.getClass().getName());
       }
-
+      //#endregion
       return vfs;
     }
   }
